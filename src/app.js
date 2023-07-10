@@ -44,7 +44,8 @@ function displayTemperature(response) {
   dateElement.innerHTML = formatDate(response.data.time * 1000);
 }
 
-let apiUrl =
-  "https://api.shecodes.io/weather/v1/current?query=Sydney&key=f147o722t6eb3482f65aeed3faa9908e&units=metric";
+let apiKey = "f147o722t6eb3482f65aeed3faa9908e";
+let city = "Sydney";
+let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
 
 axios.get(apiUrl).then(displayTemperature);

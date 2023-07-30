@@ -22,27 +22,44 @@ function formatDate(timestamp) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast() {
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return days[day];
+}
+
+function displayForecast(response) {
+  let forecast = response.data.daily;
+
   let forecastElement = document.querySelector("#forecast");
 
-  let days = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon"];
-
   let forecastHTML = `<div class="row">`;
-  days.forEach(function (days) {
-    forecastHTML =
-      forecastHTML +
-      `<div class="col-2">
-                <div class="weather-forecast-date">${days}</div>
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        `<div class="col-2">
+                <div class="weather-forecast-date">${formatDay(
+                  forecastDay.time
+                )}</div>
                 <img
-                  src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${
+                    forecastDay.condition.icon
+                  }.png"
                   alt=""
                   width="50"
                 />
                 <div class="weather-forecast-temperatures">
-                <span class="weather-forecast-min">12°</span>
-                <span class="weather-forecast-max">18°</span>
+                <span class="weather-forecast-min">
+                  ${Math.round(forecastDay.temperature.minimum)}°</span>
+                <span class="weather-forecast-max"> ${Math.round(
+                  forecastDay.temperature.maximum
+                )}°</span>
                 </div>
-            </div>`;
+              </div>`;
+    }
   });
 
   forecastHTML = forecastHTML + `</div>`;
@@ -88,10 +105,17 @@ function search(city) {
   axios.get(apiUrl).then(displayTemperature);
 }
 
+function searchForecast(city) {
+  let apiKey = "f147o722t6eb3482f65aeed3faa9908e";
+  let apiUrlForecast = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
+  axios.get(apiUrlForecast).then(displayForecast);
+}
+
 function handleSubmit(event) {
   event.preventDefault();
   let cityInputElement = document.querySelector("#city-input");
   search(cityInputElement.value);
+  searchForecast(cityInputElement.value);
 }
 
 function displayFahrenheitTemperature(event) {
@@ -125,4 +149,4 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 search("Sydney");
-displayForecast();
+searchForecast("Sydney");

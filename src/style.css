@@ -28,6 +28,10 @@ li:first-letter {
   text-transform: capitalize;
 }
 
+small {
+  display: block;
+  text-align: center;
+}
 .whole-app-wrapper {
   max-width: 600px;
   margin: 30px auto;
